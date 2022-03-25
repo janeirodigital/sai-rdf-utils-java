@@ -10,6 +10,7 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.janeirodigital.sai.rdfutils.RdfUtils.*;
+import static com.janeirodigital.sai.rdfutils.TestableVocabulary.TESTABLE_PROJECT;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -135,6 +137,23 @@ class RdfUtilsTests {
         Resource resource = getResourceFromModel(readableModel, resourceUrl);
         assertNotNull(resource);
         assertEquals(resourceUrl.toString(), resource.getURI());
+    }
+
+
+    @Test
+    @DisplayName("Get new resource for RDF Type as String")
+    void checkGetNewResourceForTypeString() {
+        Resource resource = getNewResourceForType(resourceUrl, TESTABLE_PROJECT.toString());
+        assertNotNull(resource);
+        assertNotNull(getObject(resource, RDF.type));
+    }
+
+    @Test
+    @DisplayName("Get new resource for RDF Type as Node")
+    void checkGetNewResourceForTypeNode() {
+        Resource resource = getNewResourceForType(resourceUrl, TESTABLE_PROJECT);
+        assertNotNull(resource);
+        assertNotNull(getObject(resource, RDF.type));
     }
 
     @Test
