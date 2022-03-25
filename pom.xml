@@ -25,6 +25,8 @@
         <mockito.version>4.3.1</mockito.version>
         <jena.version>4.4.0</jena.version>
         <collection-utils.version>4.4</collection-utils.version>
+        <sonar.organization>janeirodigital</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <scm>
