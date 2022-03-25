@@ -177,6 +177,13 @@ class RdfUtilsTests {
         assertThrows(SaiRdfNotFoundException.class, () -> {
             getRequiredStatement(readableResource, TestableVocabulary.TESTABLE_MISSING);
         });
+
+        try {
+            getRequiredStatement(readableResource, TestableVocabulary.TESTABLE_MISSING);
+        } catch (SaiRdfNotFoundException ex) {
+            assertNotNull(ex.getMessage());
+        }
+
     }
 
     @Test
@@ -206,6 +213,11 @@ class RdfUtilsTests {
     @DisplayName("Fail to serialize RDF model to JSON-LD string - invalid JSON-LD")
     void failToGetJsonLdStringFromRdfModelInvalid() {
         assertThrows(SaiRdfException.class, () -> getJsonLdStringFromModel(readableModel, getInvalidJsonLdContext()));
+        try {
+            getJsonLdStringFromModel(readableModel, getInvalidJsonLdContext());
+        } catch (SaiRdfException ex) {
+            assertNotNull(ex.getMessage());
+        }
     }
 
     @Test
