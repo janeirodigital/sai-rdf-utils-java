@@ -114,7 +114,7 @@ public class RdfUtils {
             JsonArray roughJsonLd = JsonLd.fromRdf(docQuads).get();
             Document roughJsonLdDocument = JsonDocument.of(roughJsonLd);
             jsonLdString = roughJsonLd.toString();
-            if (jsonLdContext != null) {
+            if (jsonLdContext != null && !jsonLdContext.isEmpty()) {
                 InputStream inputContext = new ByteArrayInputStream(jsonLdContext.getBytes());
                 Document docContext = JsonDocument.of(inputContext);
                 JsonObject compacted = JsonLd.compact(roughJsonLdDocument, docContext).compactToRelative(false).get();
