@@ -210,6 +210,13 @@ class RdfUtilsTests {
     }
 
     @Test
+    @DisplayName("Serialize RDF model to JSON-LD string with empty context")
+    void checkGetJsonLdStringFromRdfModelEmptyContext() throws SaiRdfException {
+        String serialized = getJsonLdStringFromModel(readableModel, "");
+        assertNotNull(serialized);
+    }
+
+    @Test
     @DisplayName("Fail to serialize RDF model to JSON-LD string - invalid JSON-LD")
     void failToGetJsonLdStringFromRdfModelInvalid() {
         assertThrows(SaiRdfException.class, () -> getJsonLdStringFromModel(readableModel, getInvalidJsonLdContext()));
