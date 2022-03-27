@@ -55,7 +55,7 @@ public class RdfUtils {
             RDFDataMgr.read(model.getGraph(), reader, baseURI.toString(), RdfUtils.getLangForContentType(contentType));
             return model;
         } catch (RiotException ex) {
-            throw new SaiRdfException("Error processing input - " + ex.getMessage());
+            throw new SaiRdfException("Error processing input string", ex);
         }
     }
 
@@ -79,7 +79,7 @@ public class RdfUtils {
             model.read(in, baseURI.toString(), contentType);
             return model;
         } catch (RiotException ex) {
-            throw new SaiRdfException("Error processing input - " + ex.getMessage());
+            throw new SaiRdfException("Error processing input from file " + filePath, ex);
         } finally {
             if (in != null) { in.close(); }
         }
@@ -121,7 +121,7 @@ public class RdfUtils {
                 jsonLdString = compacted.toString();
             }
         } catch (JsonLdError ex) {
-            throw new SaiRdfException("Failed to serialize resource to JSON-LD: " + ex.getMessage());
+            throw new SaiRdfException("Failed to serialize resource to JSON-LD", ex);
         }
         return jsonLdString;
     }
@@ -642,7 +642,7 @@ public class RdfUtils {
         try {
             return new URL(node.asResource().getURI());
         } catch (MalformedURLException ex) {
-            throw new SaiRdfException("Failed to convert node to URL - " + node.asResource().getURI() + ": " + ex.getMessage());
+            throw new SaiRdfException("Failed to convert node to URL - " + node.asResource().getURI(), ex);
         }
     }
 
