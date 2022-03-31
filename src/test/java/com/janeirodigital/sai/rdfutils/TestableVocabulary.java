@@ -6,7 +6,7 @@ public final class TestableVocabulary {
 
     private TestableVocabulary() { }
 
-    private static Model model = ModelFactory.createDefaultModel();
+    private static final Model model = ModelFactory.createDefaultModel();
 
     // Namespace
     private static final String NS = "http://testable.example/ns/testable#";
