@@ -20,16 +20,12 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import static com.janeirodigital.sai.rdfutils.RdfUtils.*;
 import static com.janeirodigital.sai.rdfutils.TestableVocabulary.TESTABLE_PROJECT;
@@ -44,7 +40,6 @@ class RdfUtilsTests {
     private static final String SOLID_OIDC_CONTEXT = "https://www.w3.org/ns/solid/oidc-context.jsonld";
     private static final String INTEROP_CONTEXT = "https://solid.github.io/data-interoperability-panel/specification/interop.jsonld";
 
-    private static URL resourceUrl;
     private static URI resourceUri;
     private static String resourcePath;
     private static String invalidResourcePath;
@@ -53,29 +48,28 @@ class RdfUtilsTests {
     private static Model updatableModel;
     private static Resource updatableResource;
 
-    private static List<URL> READABLE_TAGS;
+    private static List<URI> READABLE_TAGS;
     private static List<String> READABLE_COMMENTS;
-    private static URL READABLE_MILESTONE;
+    private static URI READABLE_MILESTONE;
     private static boolean READABLE_ACTIVE;
     private static OffsetDateTime READABLE_CREATED_AT;
     private static String READABLE_NAME;
     private static int READABLE_ID;
 
     @BeforeAll
-    static void beforeAll() throws MalformedURLException, SaiRdfException {
-        resourceUrl = new URL("https://data.example/resource#project");
-        resourceUri = urlToUri(resourceUrl);
+    static void beforeAll() throws SaiRdfException {
+        resourceUri = URI.create("https://data.example/resource#project");
         resourcePath = "rdf-resource.ttl";
         invalidResourcePath = "invalid-rdf-resource.ttl";
         readableModel = getModelFromString(resourceUri, getRdfResourceBody(), TEXT_TURTLE);
-        readableResource = getResourceFromModel(readableModel, resourceUrl);
-        READABLE_TAGS = Arrays.asList(new URL("https://data.example/tags/tag-1"),
-                new URL("https://data.example/tags/tag-2"),
-                new URL("https://data.example/tags/tag-3"));
+        readableResource = getResourceFromModel(readableModel, resourceUri);
+        READABLE_TAGS = Arrays.asList(URI.create("https://data.example/tags/tag-1"),
+                URI.create("https://data.example/tags/tag-2"),
+                URI.create("https://data.example/tags/tag-3"));
         READABLE_COMMENTS = Arrays.asList("First original comment" ,
                 "Second original comment" ,
                 "Third original comment");
-        READABLE_MILESTONE = new URL("https://data.example/data/projects/project-1/milestone-3/#milestone");
+        READABLE_MILESTONE = URI.create("https://data.example/data/projects/project-1/milestone-3/#milestone");
         READABLE_ACTIVE = true;
         READABLE_CREATED_AT = OffsetDateTime.parse("2021-04-04T20:15:47.000Z", DateTimeFormatter.ISO_DATE_TIME);
         READABLE_NAME = "Great Validations";
@@ -85,7 +79,7 @@ class RdfUtilsTests {
     @BeforeEach
     void beforeEach() throws SaiRdfException {
         updatableModel = getModelFromString(resourceUri, getRdfResourceBody(), TEXT_TURTLE);
-        updatableResource = getResourceFromModel(updatableModel, resourceUrl);
+        updatableResource = getResourceFromModel(updatableModel, resourceUri);
     }
 
     @Test
@@ -93,7 +87,7 @@ class RdfUtilsTests {
     void checkGetModelFromString() throws SaiRdfException {
         Model model = getModelFromString(resourceUri, getRdfResourceBody(), TEXT_TURTLE);
         assertNotNull(model);
-        assertNotNull(model.getResource(resourceUrl.toString()));
+        assertNotNull(model.getResource(resourceUri.toString()));
     }
 
     @Test
@@ -109,7 +103,7 @@ class RdfUtilsTests {
     void checkGetModelFromFile() throws SaiRdfException, IOException {
         Model model = getModelFromFile(resourceUri, resourcePath, TEXT_TURTLE);
         assertNotNull(model);
-        assertNotNull(model.getResource(resourceUrl.toString()));
+        assertNotNull(model.getResource(resourceUri.toString()));
     }
 
     @Test
@@ -134,16 +128,16 @@ class RdfUtilsTests {
     @Test
     @DisplayName("Get resource from RDF model")
     void checkGetResourceFromModel() {
-        Resource resource = getResourceFromModel(readableModel, resourceUrl);
+        Resource resource = getResourceFromModel(readableModel, resourceUri);
         assertNotNull(resource);
-        assertEquals(resourceUrl.toString(), resource.getURI());
+        assertEquals(resourceUri.toString(), resource.getURI());
     }
 
 
     @Test
     @DisplayName("Get new resource for RDF Type as String")
     void checkGetNewResourceForTypeString() {
-        Resource resource = getNewResourceForType(resourceUrl, TESTABLE_PROJECT.toString());
+        Resource resource = getNewResourceForType(resourceUri, TESTABLE_PROJECT.toString());
         assertNotNull(resource);
         assertNotNull(getObject(resource, RDF.type));
     }
@@ -151,7 +145,7 @@ class RdfUtilsTests {
     @Test
     @DisplayName("Get new resource for RDF Type as Node")
     void checkGetNewResourceForTypeNode() {
-        Resource resource = getNewResourceForType(resourceUrl, TESTABLE_PROJECT);
+        Resource resource = getNewResourceForType(resourceUri, TESTABLE_PROJECT);
         assertNotNull(resource);
         assertNotNull(getObject(resource, RDF.type));
     }
@@ -290,31 +284,31 @@ class RdfUtilsTests {
     }
 
     @Test
-    @DisplayName("Get list of URL objects from resource by property")
-    void checkGetUrlObjects() throws SaiRdfException {
-        List<URL> objects = getUrlObjects(readableResource, TestableVocabulary.TESTABLE_HAS_TAG);
+    @DisplayName("Get list of URI objects from resource by property")
+    void checkGetUriObjects() throws SaiRdfException {
+        List<URI> objects = getUriObjects(readableResource, TestableVocabulary.TESTABLE_HAS_TAG);
         assertNotNull(objects);
         assertEquals(3, objects.size());
         assertTrue(objects.containsAll(READABLE_TAGS));
 
         assertThrows(SaiRdfException.class, () -> {
-            getRequiredUrlObjects(readableResource, TestableVocabulary.TESTABLE_HAS_COMMENT);
+            getRequiredUriObjects(readableResource, TestableVocabulary.TESTABLE_HAS_COMMENT);
         });
 
-        List<URL> missing = getUrlObjects(readableResource, TestableVocabulary.TESTABLE_MISSING);
+        List<URI> missing = getUriObjects(readableResource, TestableVocabulary.TESTABLE_MISSING);
         assertTrue(missing.isEmpty());
     }
 
     @Test
-    @DisplayName("Get list of required URL objects from resource by property")
-    void checkGetRequiredUrlObjects() throws SaiRdfNotFoundException, SaiRdfException {
-        List<URL> objects = getRequiredUrlObjects(readableResource, TestableVocabulary.TESTABLE_HAS_TAG);
+    @DisplayName("Get list of required URI objects from resource by property")
+    void checkGetRequiredUriObjects() throws SaiRdfNotFoundException, SaiRdfException {
+        List<URI> objects = getRequiredUriObjects(readableResource, TestableVocabulary.TESTABLE_HAS_TAG);
         assertNotNull(objects);
         assertEquals(3, objects.size());
         assertTrue(objects.containsAll(READABLE_TAGS));
 
         assertThrows(SaiRdfNotFoundException.class, () -> {
-            getRequiredUrlObjects(readableResource, TestableVocabulary.TESTABLE_MISSING);
+            getRequiredUriObjects(readableResource, TestableVocabulary.TESTABLE_MISSING);
         });
     }
 
@@ -356,29 +350,29 @@ class RdfUtilsTests {
     }
 
     @Test
-    @DisplayName("Get URL object from resource by property")
-    void checkGetUrlObject() throws SaiRdfException {
-        URL object = getUrlObject(readableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE);
+    @DisplayName("Get URI object from resource by property")
+    void checkGetUriObject() throws SaiRdfException {
+        URI object = getUriObject(readableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE);
         assertNotNull(object);
         assertEquals(READABLE_MILESTONE, object);
 
         assertThrows(SaiRdfException.class, () -> {
-            getUrlObject(readableResource, TestableVocabulary.TESTABLE_CREATED_AT);
+            getUriObject(readableResource, TestableVocabulary.TESTABLE_CREATED_AT);
         });
 
-        URL missing = getUrlObject(readableResource, TestableVocabulary.TESTABLE_MISSING);
+        URI missing = getUriObject(readableResource, TestableVocabulary.TESTABLE_MISSING);
         assertNull(missing);
     }
 
     @Test
-    @DisplayName("Get required URL object from resource by property")
-    void checkGetRequiredUrlObject() throws SaiRdfNotFoundException, SaiRdfException {
-        URL object = getRequiredUrlObject(readableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE);
+    @DisplayName("Get required URI object from resource by property")
+    void checkGetRequiredUriObject() throws SaiRdfNotFoundException, SaiRdfException {
+        URI object = getRequiredUriObject(readableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE);
         assertNotNull(object);
         assertEquals(READABLE_MILESTONE, object);
 
         assertThrows(SaiRdfNotFoundException.class, () -> {
-            getRequiredUrlObject(readableResource, TestableVocabulary.TESTABLE_MISSING);
+            getRequiredUriObject(readableResource, TestableVocabulary.TESTABLE_MISSING);
         });
     }
 
@@ -513,11 +507,11 @@ class RdfUtilsTests {
 
     @Test
     @DisplayName("Update RDF node object by property")
-    void checkUpdateNodeObject() throws MalformedURLException, SaiRdfException {
-        URL url = new URL("https://solidproject.org");
+    void checkUpdateNodeObject() throws SaiRdfException {
+        URI url = URI.create("https://solidproject.org");
         Node node = NodeFactory.createURI(url.toString());
         RdfUtils.updateObject(updatableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE, updatableModel.asRDFNode(node));
-        assertEquals(url, getUrlObject(updatableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE));
+        assertEquals(url, getUriObject(updatableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE));
     }
 
     @Test
@@ -529,11 +523,11 @@ class RdfUtilsTests {
     }
 
     @Test
-    @DisplayName("Update URL object by property")
-    void checkUpdateUrlObject() throws SaiRdfException, MalformedURLException {
-        URL milestone = new URL("https://solidproject.org/roadmap#milestone");
+    @DisplayName("Update URI object by property")
+    void checkUpdateUriObject() throws SaiRdfException {
+        URI milestone = URI.create("https://solidproject.org/roadmap#milestone");
         RdfUtils.updateObject(updatableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE, milestone);
-        assertEquals(milestone, getUrlObject(updatableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE));
+        assertEquals(milestone, getUriObject(updatableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE));
     }
 
     @Test
@@ -562,14 +556,14 @@ class RdfUtilsTests {
     }
 
     @Test
-    @DisplayName("Update list of URL objects by property")
-    void checkUpdateUrlObjects() throws MalformedURLException, SaiRdfException {
+    @DisplayName("Update list of URI objects by property")
+    void checkUpdateUriObjects() throws SaiRdfException {
 
-        List<URL> tags = Arrays.asList(new URL("https://data.example/tags/tag-11111"),
-                new URL("https://data.example/tags/tag-22222"),
-                new URL("https://data.example/tags/tag-33333"));
-        updateUrlObjects(updatableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE, tags);
-        assertTrue(CollectionUtils.isEqualCollection(tags, getUrlObjects(updatableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE)));
+        List<URI> tags = Arrays.asList(URI.create("https://data.example/tags/tag-11111"),
+                URI.create("https://data.example/tags/tag-22222"),
+                URI.create("https://data.example/tags/tag-33333"));
+        updateUriObjects(updatableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE, tags);
+        assertTrue(CollectionUtils.isEqualCollection(tags, getUriObjects(updatableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE)));
     }
 
     @Test
@@ -583,25 +577,25 @@ class RdfUtilsTests {
     }
 
     @Test
-    @DisplayName("Get URL value from RDF node")
-    void checkNodeToUrl() throws SaiRdfException {
+    @DisplayName("Get URI value from RDF node")
+    void checkNodeToUri() throws SaiRdfException {
         RDFNode object = getObject(readableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE);
-        assertEquals(READABLE_MILESTONE, nodeToUrl(object));
-        // Fail when URL is not a resource
+        assertEquals(READABLE_MILESTONE, nodeToUri(object));
+        // Fail when URI is not a resource
         RDFNode notResource = getObject(readableResource, TestableVocabulary.TESTABLE_NAME);
-        assertThrows(SaiRdfException.class, () -> { nodeToUrl(notResource); });
+        assertThrows(SaiRdfException.class, () -> { nodeToUri(notResource); });
     }
 
     @Test
-    @DisplayName("Fail to get malformed URL value from RDF node")
-    void failNodeToUrlMalformed() {
-        // Fail when URL is not a resource
+    @DisplayName("Fail to get malformed URI value from RDF node")
+    void failNodeToUriMalformed() {
+        // Fail when URI is not a resource
         RDFNode mockNode = mock(RDFNode.class);
         Resource mockResource = mock(Resource.class);
         when(mockNode.isResource()).thenReturn(true);
         when(mockNode.asResource()).thenReturn(mockResource);
-        when(mockResource.getURI()).thenReturn("cool:web:times");
-        assertThrows(SaiRdfException.class, () -> { nodeToUrl(mockNode); });
+        when(mockResource.getURI()).thenReturn("http:{}{}cool\\web");
+        assertThrows(SaiRdfException.class, () -> { nodeToUri(mockNode); });
     }
 
     @Test
@@ -612,20 +606,6 @@ class RdfUtilsTests {
         assertEquals(Lang.JSONLD11, getLangForContentType(LD_JSON));
         assertEquals(Lang.RDFXML, getLangForContentType(RDF_XML));
         assertEquals(Lang.NTRIPLES, getLangForContentType(N_TRIPLES));
-    }
-
-    /**
-     * Wrap conversion from URL to URI which should never fail on a well-formed URL.
-     * @param url covert this URL to a URI
-     * @return IRI java native object for a URI (useful for Jena graph operations)
-     */
-    private static URI urlToUri(URL url) {
-        Objects.requireNonNull(url, "Must provide a URL to convert");
-        try {
-            return url.toURI();
-        } catch (URISyntaxException ex) {
-            throw new IllegalStateException("can't convert URL <" + url + "> to IRI: " + ex);
-        }
     }
 
     private static String getRdfResourceBody() {

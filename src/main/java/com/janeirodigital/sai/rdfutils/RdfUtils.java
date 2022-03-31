@@ -17,9 +17,8 @@ import org.apache.jena.riot.RiotException;
 import org.apache.jena.vocabulary.RDF;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
+import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -39,20 +38,20 @@ public class RdfUtils {
 
     /**
      * Deserializes the provided String <code>rawContent</code> into a Jena Model
-     * @param baseURI Base URI to use for statements
+     * @param baseUri Base URI to use for statements
      * @param rawContent String of RDF
      * @param contentType Content type of content
      * @return Deserialized Jean Model
      * @throws SaiRdfException
      */
-    public static Model getModelFromString(URI baseURI, String rawContent, String contentType) throws SaiRdfException {
-        Objects.requireNonNull(baseURI, "Must provide a baseURI to generate a model");
+    public static Model getModelFromString(URI baseUri, String rawContent, String contentType) throws SaiRdfException {
+        Objects.requireNonNull(baseUri, "Must provide a base URI to generate a model");
         Objects.requireNonNull(rawContent, "Must provide content to generate a model from");
         Objects.requireNonNull(contentType, "Must provide content type for model generation");
         try {
             Model model = ModelFactory.createDefaultModel();
             StringReader reader = new StringReader(rawContent);
-            RDFDataMgr.read(model.getGraph(), reader, baseURI.toString(), RdfUtils.getLangForContentType(contentType));
+            RDFDataMgr.read(model.getGraph(), reader, baseUri.toString(), RdfUtils.getLangForContentType(contentType));
             return model;
         } catch (RiotException ex) {
             throw new SaiRdfException("Error processing input string", ex);
@@ -61,22 +60,22 @@ public class RdfUtils {
 
     /**
      * Deserializes the contents of the provided <code>filePath</code> into a Jena Model.
-     * @param baseURI Base URI to use for statements
+     * @param baseUri Base URI to use for statements
      * @param filePath Path to file containing input data
      * @param contentType Content type of file data
      * @return Deserialized Jena Model
      * @throws SaiRdfException
      * @throws IOException
      */
-    public static Model getModelFromFile(URI baseURI, String filePath, String contentType) throws SaiRdfException, IOException {
-        Objects.requireNonNull(baseURI, "Must provide a baseURI to generate a model");
+    public static Model getModelFromFile(URI baseUri, String filePath, String contentType) throws SaiRdfException, IOException {
+        Objects.requireNonNull(baseUri, "Must provide a baseUri to generate a model");
         Objects.requireNonNull(filePath, "Must provide an input file path to provide data for the generated model");
         Objects.requireNonNull(contentType, "Must provide content type for model generation");
         InputStream in = null;
         try {
             Model model = ModelFactory.createDefaultModel();
             in = RDFDataMgr.open(filePath);
-            model.read(in, baseURI.toString(), contentType);
+            model.read(in, baseUri.toString(), contentType);
             return model;
         } catch (RiotException ex) {
             throw new SaiRdfException("Error processing input from file " + filePath, ex);
@@ -127,50 +126,50 @@ public class RdfUtils {
     }
 
     /**
-     * Returns a jena Resource at the specified <code>resourceUrl</code> from the provided jena Model
+     * Returns a jena Resource at the specified <code>resourceUri</code> from the provided jena Model
      * @param model Model to search
-     * @param resourceUrl URL of the resource to search for
-     * @return Jena Resource at resourceUrl
+     * @param resourceUri URI of the resource to search for
+     * @return Jena Resource at resourceUri
      */
-    public static Resource getResourceFromModel(Model model, URL resourceUrl) {
+    public static Resource getResourceFromModel(Model model, URI resourceUri) {
         Objects.requireNonNull(model, "Must provide a model to get a resource from it");
-        Objects.requireNonNull(resourceUrl, "Must provide resource to get from model");
-        return model.getResource(resourceUrl.toString());
+        Objects.requireNonNull(resourceUri, "Must provide resource to get from model");
+        return model.getResource(resourceUri.toString());
     }
 
     /**
-     * Gets a new Jena Resource (and associated Model) for the provided <code>resourceUrl</code>
+     * Gets a new Jena Resource (and associated Model) for the provided <code>resourceUri</code>
      * and adds a statement identifying the resource as the provided RDF <code>type</code>.
-     * @param resourceUrl URL of the resource
+     * @param resourceUri URI of the resource
      * @return Resource
      */
-    public static Resource getNewResourceForType(URL resourceUrl, String type) {
-        Resource resource = getNewResource(resourceUrl);
+    public static Resource getNewResourceForType(URI resourceUri, String type) {
+        Resource resource = getNewResource(resourceUri);
         resource.addProperty(RDF.type, type);
         return resource;
     }
 
     /**
-     * Gets a new Jena Resource (and associated Model) for the provided <code>resourceUrl</code>
+     * Gets a new Jena Resource (and associated Model) for the provided <code>resourceUri</code>
      * and adds a statement identifying the resource as the provided RDF <code>type</code>.
-     * @param resourceUrl URL of the resource
+     * @param resourceUri URI of the resource
      * @param type RDF type
      * @return Resource
      */
-    public static Resource getNewResourceForType(URL resourceUrl, RDFNode type) {
-        Resource resource = getNewResource(resourceUrl);
+    public static Resource getNewResourceForType(URI resourceUri, RDFNode type) {
+        Resource resource = getNewResource(resourceUri);
         resource.addProperty(RDF.type, type);
         return resource;
     }
 
     /**
-     * Gets a new Jena Resource (and associated Model) for the provided <code>resourceUrl</code>
-     * @param resourceUrl URL of the resource
+     * Gets a new Jena Resource (and associated Model) for the provided <code>resourceUri</code>
+     * @param resourceUri URI of the resource
      * @return Resource
      */
-    public static Resource getNewResource(URL resourceUrl) {
+    public static Resource getNewResource(URI resourceUri) {
         Model model = ModelFactory.createDefaultModel();
-        return model.createResource(resourceUrl.toString());
+        return model.createResource(resourceUri.toString());
     }
 
     /**
@@ -258,37 +257,37 @@ public class RdfUtils {
     }
 
     /**
-     * Returns a list of URLs matching the provided <code>property</code> in the
+     * Returns a list of URIs matching the provided <code>property</code> in the
      * provided <code>resource</code>. When nothing is found an empty list is returned.
      * @param resource Jena Resource to navigate
      * @param property Jena Property to search for
-     * @return List of URL object values matching the provided property (possibly empty)
+     * @return List of URI object values matching the provided property (possibly empty)
      */
-    public static List<URL> getUrlObjects(Resource resource, Property property) throws SaiRdfException {
-        Objects.requireNonNull(resource, "Cannot get URLs from a null resource");
-        Objects.requireNonNull(property, "Cannot get URLs from a resource with a null property");
+    public static List<URI> getUriObjects(Resource resource, Property property) throws SaiRdfException {
+        Objects.requireNonNull(resource, "Cannot get URIs from a null resource");
+        Objects.requireNonNull(property, "Cannot get URIs from a resource with a null property");
         StmtIterator it = resource.listProperties(property);
-        ArrayList<URL> urls = new ArrayList<>();
+        ArrayList<URI> uris = new ArrayList<>();
         while (it.hasNext()) {
             Statement statement = it.next();
             RDFNode object = statement.getObject();
-            if (!object.isResource()) { throw new SaiRdfException(msgNotUrlResource(resource, property, object)); }
-            urls.add(nodeToUrl(object));
+            if (!object.isResource()) { throw new SaiRdfException(msgNotUriResource(resource, property, object)); }
+            uris.add(nodeToUri(object));
         }
-        return urls;
+        return uris;
     }
 
     /**
-     * Returns a list of URLs matching the provided <code>property</code> in the
+     * Returns a list of URIs matching the provided <code>property</code> in the
      * provided <code>resource</code>. When nothing is found an exception is thrown.
      * @param resource Jena Resource to navigate
      * @param property Jena Property to search for
-     * @return List of URLs matching the provided property
+     * @return List of URIs matching the provided property
      */
-    public static List<URL> getRequiredUrlObjects(Resource resource, Property property) throws SaiRdfException, SaiRdfNotFoundException {
-        List<URL> urls = getUrlObjects(resource, property);
-        if (urls.isEmpty()) { throw new SaiRdfNotFoundException(msgNothingFound(resource, property)); }
-        return urls;
+    public static List<URI> getRequiredUriObjects(Resource resource, Property property) throws SaiRdfException, SaiRdfNotFoundException {
+        List<URI> uris = getUriObjects(resource, property);
+        if (uris.isEmpty()) { throw new SaiRdfNotFoundException(msgNothingFound(resource, property)); }
+        return uris;
     }
 
     /**
@@ -327,35 +326,35 @@ public class RdfUtils {
     }
 
     /**
-     * Returns a single URL value from the object of the statement matching the provided
+     * Returns a single URI value from the object of the statement matching the provided
      * <code>property</code> in the provided <code>resource</code>. Returns null when
      * no match is found.
      * @param resource Jena resource to navigate
      * @param property Jena property to search for
-     * @return URL object value or null
+     * @return URI object value or null
      * @throws SaiRdfException
      */
-    public static URL getUrlObject(Resource resource, Property property) throws SaiRdfException {
+    public static URI getUriObject(Resource resource, Property property) throws SaiRdfException {
         RDFNode object = getObject(resource, property);
         if (object == null) { return null; }
-        if (!object.isResource()) { throw new SaiRdfException(msgNotUrlResource(resource, property, object)); }
-        return nodeToUrl(object);
+        if (!object.isResource()) { throw new SaiRdfException(msgNotUriResource(resource, property, object)); }
+        return nodeToUri(object);
     }
 
     /**
-     * Returns a single URL value from the object of the statement matching the provided
+     * Returns a single URI value from the object of the statement matching the provided
      * <code>property</code> in the provided <code>resource</code>. Throws an exception
      * when no match is found.
      * @param resource Jena resource to navigate
      * @param property Jena property to search for
-     * @return URL object value
+     * @return URI object value
      * @throws SaiRdfException
      * @throws SaiRdfNotFoundException when nothing is found
      */
-    public static URL getRequiredUrlObject(Resource resource, Property property) throws SaiRdfException, SaiRdfNotFoundException {
-        URL url = getUrlObject(resource, property);
-        if (url == null) { throw new SaiRdfNotFoundException(msgNothingFound(resource, property)); }
-        return url;
+    public static URI getRequiredUriObject(Resource resource, Property property) throws SaiRdfException, SaiRdfNotFoundException {
+        URI uri = getUriObject(resource, property);
+        if (uri == null) { throw new SaiRdfNotFoundException(msgNothingFound(resource, property)); }
+        return uri;
     }
 
     /**
@@ -528,16 +527,16 @@ public class RdfUtils {
 
     /**
      * Updates the provided Jena Resource <code>resource</code> for the specified
-     * <code>property</code> with the URL <code>url</code>. This will remove
+     * <code>property</code> with the URI <code>uri</code>. This will remove
      * all existing statements of <code>property</code> in <code>resource</code> first.
      * @param resource Jena Resource to update
      * @param property Jena Property to update
-     * @param url URL to update with
+     * @param uri URI to update with
      * @return This resource to allow cascading calls
      */
-    public static Resource updateObject(Resource resource, Property property, URL url) {
-        Objects.requireNonNull(url, "Cannot update a resource by passing a null url");
-        Node node = NodeFactory.createURI(url.toString());
+    public static Resource updateObject(Resource resource, Property property, URI uri) {
+        Objects.requireNonNull(uri, "Cannot update a resource by passing a null uri");
+        Node node = NodeFactory.createURI(uri.toString());
         updateObject(resource, property, resource.getModel().asRDFNode(node));
         return resource;
     }
@@ -590,20 +589,20 @@ public class RdfUtils {
 
     /**
      * Updates the provided Jena Resource <code>resource</code> for the specified
-     * <code>property</code> with the list of URLs provided via <code>bool</code>. This will remove
+     * <code>property</code> with the list of URIs provided via <code>bool</code>. This will remove
      * all existing statements of <code>property</code> in <code>resource</code> first.
      * @param resource Jena Resource to update
      * @param property Jena Property to update
-     * @param urls List of URLs to update with
+     * @param uris List of URIs to update with
      * @return This resource to allow cascading calls
      */
-    public static Resource updateUrlObjects(Resource resource, Property property, List<URL> urls) {
+    public static Resource updateUriObjects(Resource resource, Property property, List<URI> uris) {
         Objects.requireNonNull(resource, "Cannot update a null resource");
         Objects.requireNonNull(property, "Cannot update a resource by passing a null property");
-        Objects.requireNonNull(urls, "Cannot update a resource by passing a null list");
+        Objects.requireNonNull(uris, "Cannot update a resource by passing a null list");
         resource.removeAll(property);
-        for (URL url : urls) {
-            Node node = NodeFactory.createURI(url.toString());
+        for (URI uri : uris) {
+            Node node = NodeFactory.createURI(uri.toString());
             resource.addProperty(property, resource.getModel().asRDFNode(node));
         }
         return resource;
@@ -631,18 +630,18 @@ public class RdfUtils {
     }
 
     /**
-     * Convert an RDFNode value to URL
+     * Convert an RDFNode value to URI
      * @param node RDFNode to convert
-     * @return Converted URL
+     * @return Converted URI
      * @throws SaiRdfException
      */
-    public static URL nodeToUrl(RDFNode node) throws SaiRdfException {
-        Objects.requireNonNull(node, "Cannot convert a null node to URL");
-        if (!node.isResource()) { throw new SaiRdfException("Cannot convert literal node to URL"); }
+    public static URI nodeToUri(RDFNode node) throws SaiRdfException {
+        Objects.requireNonNull(node, "Cannot convert a null node to URI");
+        if (!node.isResource()) { throw new SaiRdfException("Cannot convert literal node to URI"); }
         try {
-            return new URL(node.asResource().getURI());
-        } catch (MalformedURLException ex) {
-            throw new SaiRdfException("Failed to convert node to URL - " + node.asResource().getURI(), ex);
+            return new URI(node.asResource().getURI()).parseServerAuthority();
+        } catch (URISyntaxException ex) {
+            throw new SaiRdfException("Failed to convert node to URI - " + node.asResource().getURI(), ex);
         }
     }
 
@@ -708,9 +707,9 @@ public class RdfUtils {
     }
 
     /**
-     * Convenience function for common condition when an object type isn't a URL resource
+     * Convenience function for common condition when an object type isn't a URI resource
      */
-    private static String msgNotUrlResource(Resource resource, Property property, RDFNode object) {
+    private static String msgNotUriResource(Resource resource, Property property, RDFNode object) {
         return "Expected non-literal value for object at " + resource.getURI() + " -- " + property.getURI() + " -- " + object;
     }
 
