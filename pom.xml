@@ -20,7 +20,7 @@
         <lombok.version>1.18.22</lombok.version>
         <slf4j.version>1.7.36</slf4j.version>
         <junit.version>5.8.2</junit.version>
-        <mockito.version>4.4.0</mockito.version>
+        <mockito.version>4.5.0</mockito.version>
         <jena.version>4.4.0</jena.version>
         <collection-utils.version>4.4</collection-utils.version>
         <sonar.organization>janeirodigital</sonar.organization>
