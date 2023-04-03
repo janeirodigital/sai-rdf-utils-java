@@ -15,7 +15,7 @@
         <maven-release-plugin.version>3.0.0-M5</maven-release-plugin.version>
         <maven-project-info-reports-plugin.version>3.1.2</maven-project-info-reports-plugin.version>
         <maven-javadoc.version>3.3.2</maven-javadoc.version>
-        <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.9</jacoco-maven-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <lombok.version>1.18.22</lombok.version>
         <slf4j.version>1.7.36</slf4j.version>
