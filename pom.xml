@@ -14,13 +14,13 @@
         <maven-site-plugin.version>3.10.0</maven-site-plugin.version>
         <maven-release-plugin.version>3.0.0-M5</maven-release-plugin.version>
         <maven-project-info-reports-plugin.version>3.1.2</maven-project-info-reports-plugin.version>
-        <maven-javadoc.version>3.3.2</maven-javadoc.version>
-        <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <lombok.version>1.18.22</lombok.version>
+        <maven-javadoc.version>3.5.0</maven-javadoc.version>
+        <jacoco-maven-plugin.version>0.8.9</jacoco-maven-plugin.version>
+        <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
+        <lombok.version>1.18.26</lombok.version>
         <slf4j.version>1.7.36</slf4j.version>
         <junit.version>5.8.2</junit.version>
-        <mockito.version>4.4.0</mockito.version>
+        <mockito.version>4.5.1</mockito.version>
         <jena.version>4.4.0</jena.version>
         <collection-utils.version>4.4</collection-utils.version>
         <sonar.organization>janeirodigital</sonar.organization>
@@ -30,7 +30,7 @@
     <scm>
         <connection>scm:git:${project.scm.url}</connection>
         <developerConnection>scm:git:${project.scm.url}</developerConnection>
-        <url>git@github.com:janeirodigital/sai-rdf-utils-java.git</url>
+        <url>https://github.com/janeirodigital/sai-rdf-utils-java.git</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -179,22 +179,23 @@
 
     <repositories>
         <repository>
-            <id>xformativ-nexus</id>
-            <name>Xformativ Repository</name>
-            <url>https://repo.janeirodigital.com/repository/oss/</url>
+            <id>jd-oss-github</id>
+            <name>OSS Maven Package Repository on Janeiro Digital GitHub</name>
+            <url>https://maven.pkg.github.com/janeirodigital/oss-packages</url>
         </repository>
     </repositories>
     <distributionManagement>
         <snapshotRepository>
-            <id>xformativ-nexus</id>
-            <name>Xformativ Repository</name>
-            <url>https://repo.janeirodigital.com/repository/oss/</url>
+            <id>jd-oss-github</id>
+            <name>OSS Maven Package Repository on Janeiro Digital GitHub</name>
+            <url>https://maven.pkg.github.com/janeirodigital/oss-packages</url>
         </snapshotRepository>
         <repository>
-            <id>xformativ-nexus</id>
-            <name>Xformativ Repository</name>
-            <url>https://repo.janeirodigital.com/repository/oss/</url>
+            <id>jd-oss-github</id>
+            <name>OSS Maven Package Repository on Janeiro Digital GitHub</name>
+            <url>https://maven.pkg.github.com/janeirodigital/oss-packages</url>
         </repository>
     </distributionManagement>
+
 
 </project>
