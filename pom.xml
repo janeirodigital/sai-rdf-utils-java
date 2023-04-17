@@ -18,7 +18,7 @@
         <jacoco-maven-plugin.version>0.8.9</jacoco-maven-plugin.version>
         <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
         <lombok.version>1.18.26</lombok.version>
-        <slf4j.version>1.7.36</slf4j.version>
+        <slf4j.version>2.0.7</slf4j.version>
         <junit.version>5.8.2</junit.version>
         <mockito.version>4.5.1</mockito.version>
         <jena.version>4.4.0</jena.version>
