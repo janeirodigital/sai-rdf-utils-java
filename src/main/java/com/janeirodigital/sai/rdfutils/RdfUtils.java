@@ -150,6 +150,19 @@ public class RdfUtils {
     }
 
     /**
+     * Gets a new Jena Resource from the supplied model for the provided <code>resourceUri</code>
+     * and adds a statement identifying the resource as the provided RDF <code>type</code>.
+     * @param dataset model to get resource from
+     * @param resourceUri URI of the resource
+     * @return Resource
+     */
+    public static Resource getNewResourceForType(Model dataset, URI resourceUri, String type) {
+        Resource resource = getNewResource(dataset, resourceUri);
+        resource.addProperty(RDF.type, type);
+        return resource;
+    }
+
+    /**
      * Gets a new Jena Resource (and associated Model) for the provided <code>resourceUri</code>
      * and adds a statement identifying the resource as the provided RDF <code>type</code>.
      * @param resourceUri URI of the resource
@@ -163,6 +176,20 @@ public class RdfUtils {
     }
 
     /**
+     * Gets a new Jena Resource from the supplied model for the provided <code>resourceUri</code>
+     * and adds a statement identifying the resource as the provided RDF <code>type</code>.
+     * @param dataset Model to get resource from
+     * @param resourceUri URI of the resource
+     * @param type RDF type
+     * @return Resource
+     */
+    public static Resource getNewResourceForType(Model dataset, URI resourceUri, RDFNode type) {
+        Resource resource = getNewResource(dataset, resourceUri);
+        resource.addProperty(RDF.type, type);
+        return resource;
+    }
+
+    /**
      * Gets a new Jena Resource (and associated Model) for the provided <code>resourceUri</code>
      * @param resourceUri URI of the resource
      * @return Resource
@@ -170,6 +197,16 @@ public class RdfUtils {
     public static Resource getNewResource(URI resourceUri) {
         Model model = ModelFactory.createDefaultModel();
         return model.createResource(resourceUri.toString());
+    }
+
+    /**
+     * Gets a new Jena Resource from the supplied model for the provided <code>resourceUri</code>
+     * @param resourceUri URI of the resource
+     * @param dataset Model to get resource from
+     * @return Resource
+     */
+    public static Resource getNewResource(Model dataset, URI resourceUri) {
+        return dataset.createResource(resourceUri.toString());
     }
 
     /**
