@@ -626,7 +626,25 @@ public class RdfUtils {
 
     /**
      * Updates the provided Jena Resource <code>resource</code> for the specified
-     * <code>property</code> with the list of URIs provided via <code>bool</code>. This will remove
+     * <code>property</code> with the list of RDF Nodes provided via <code>objects</code>. This will remove
+     * all existing statements of <code>property</code> in <code>resource</code> first.
+     * @param resource Jena Resource to update
+     * @param property Jena Property to update
+     * @param objects List of RDFNodes to update with
+     * @return This resource to allow cascading calls
+     */
+    public static Resource updateObjects(Resource resource, Property property, List<RDFNode> objects) {
+        Objects.requireNonNull(resource, "Cannot update a null resource");
+        Objects.requireNonNull(property, "Cannot update a resource by passing a null property");
+        Objects.requireNonNull(objects, "Cannot update a resource by passing a null list");
+        resource.removeAll(property);
+        for (RDFNode object : objects) { resource.addProperty(property, object); }
+        return resource;
+    }
+
+    /**
+     * Updates the provided Jena Resource <code>resource</code> for the specified
+     * <code>property</code> with the list of URIs provided via <code>uris</code>. This will remove
      * all existing statements of <code>property</code> in <code>resource</code> first.
      * @param resource Jena Resource to update
      * @param property Jena Property to update
@@ -647,7 +665,7 @@ public class RdfUtils {
 
     /**
      * Updates the provided Jena Resource <code>resource</code> for the specified
-     * <code>property</code> with the list of Strings provided via <code>bool</code>. This will remove
+     * <code>property</code> with the list of Strings provided via <code>strings</code>. This will remove
      * all existing statements of <code>property</code> in <code>resource</code> first.
      * @param resource Jena Resource to update
      * @param property Jena Property to update
