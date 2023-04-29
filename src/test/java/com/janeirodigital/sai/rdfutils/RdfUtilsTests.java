@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.janeirodigital.sai.rdfutils.RdfUtils.*;
+import static com.janeirodigital.sai.rdfutils.TestableVocabulary.TESTABLE_MILESTONE;
 import static com.janeirodigital.sai.rdfutils.TestableVocabulary.TESTABLE_PROJECT;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,6 +42,7 @@ class RdfUtilsTests {
     private static final String INTEROP_CONTEXT = "https://solid.github.io/data-interoperability-panel/specification/interop.jsonld";
 
     private static URI resourceUri;
+    private static URI additionalUri;
     private static String resourcePath;
     private static String invalidResourcePath;
     private static Model readableModel;
@@ -59,6 +61,7 @@ class RdfUtilsTests {
     @BeforeAll
     static void beforeAll() throws SaiRdfException {
         resourceUri = URI.create("https://data.example/resource#project");
+        additionalUri = URI.create("https://data.example/resource#milestone");
         resourcePath = "rdf-resource.ttl";
         invalidResourcePath = "invalid-rdf-resource.ttl";
         readableModel = getModelFromString(resourceUri, getRdfResourceBody(), TEXT_TURTLE);
@@ -148,6 +151,30 @@ class RdfUtilsTests {
         Resource resource = getNewResourceForType(resourceUri, TESTABLE_PROJECT);
         assertNotNull(resource);
         assertNotNull(getObject(resource, RDF.type));
+    }
+
+    @Test
+    @DisplayName("Get new resource from existing model for RDF Type as String")
+    void checkGetNewResourceFromExistingModelForTypeString() {
+        Resource resource = getNewResourceForType(resourceUri, TESTABLE_PROJECT.toString());
+        assertNotNull(resource);
+        assertNotNull(getObject(resource, RDF.type));
+        Model existingDataset = resource.getModel();
+        Resource additionalResource = getNewResourceForType(existingDataset, additionalUri, TESTABLE_MILESTONE.toString());
+        assertNotNull(additionalResource);
+        assertNotNull(getObject(additionalResource, RDF.type));
+    }
+
+    @Test
+    @DisplayName("Get new resource from existing model for RDF Type as Node")
+    void checkGetNewResourceFromExistingModelForTypeNode() {
+        Resource resource = getNewResourceForType(resourceUri, TESTABLE_PROJECT);
+        assertNotNull(resource);
+        assertNotNull(getObject(resource, RDF.type));
+        Model existingDataset = resource.getModel();
+        Resource additionalResource = getNewResourceForType(existingDataset, additionalUri, TESTABLE_MILESTONE);
+        assertNotNull(additionalResource);
+        assertNotNull(getObject(additionalResource, RDF.type));
     }
 
     @Test
