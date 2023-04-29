@@ -583,6 +583,17 @@ class RdfUtilsTests {
     }
 
     @Test
+    @DisplayName("Update list of RDF node objects by property")
+    void checkUpdateObjects() throws SaiRdfException {
+
+        List<RDFNode> tags = Arrays.asList(updatableResource.getModel().asRDFNode(NodeFactory.createURI("https://data.example/tags/tag-11111")),
+                                           updatableResource.getModel().asRDFNode(NodeFactory.createURI("https://data.example/tags/tag-33333")),
+                                           updatableResource.getModel().asRDFNode(NodeFactory.createURI("https://data.example/tags/tag-22222")));
+        updateObjects(updatableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE, tags);
+        assertTrue(CollectionUtils.isEqualCollection(tags, getObjects(updatableResource, TestableVocabulary.TESTABLE_HAS_MILESTONE)));
+    }
+
+    @Test
     @DisplayName("Update list of URI objects by property")
     void checkUpdateUriObjects() throws SaiRdfException {
 
