@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"com.janeirodigital.sai.rdfutils","l":"RdfUtils"},{"p":"com.janeirodigital.sai.rdfutils","l":"SaiRdfException"},{"p":"com.janeirodigital.sai.rdfutils","l":"SaiRdfNotFoundException"}]
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.janeirodigital.sai.rdfutils","l":"RdfUtils"},{"p":"com.janeirodigital.sai.rdfutils","l":"SaiRdfException"},{"p":"com.janeirodigital.sai.rdfutils","l":"SaiRdfNotFoundException"}];updateSearchResults();
