@@ -9,7 +9,7 @@
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven-site-plugin.version>3.10.0</maven-site-plugin.version>
@@ -19,10 +19,10 @@
         <jacoco-maven-plugin.version>0.8.9</jacoco-maven-plugin.version>
         <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
         <lombok.version>1.18.26</lombok.version>
-        <slf4j.version>1.7.36</slf4j.version>
-        <junit.version>5.8.2</junit.version>
-        <mockito.version>4.5.1</mockito.version>
-        <jena.version>4.4.0</jena.version>
+        <slf4j.version>2.0.7</slf4j.version>
+        <junit.version>5.9.2</junit.version>
+        <mockito.version>5.2.0</mockito.version>
+        <jena.version>4.8.0</jena.version>
         <collection-utils.version>4.4</collection-utils.version>
         <sonar.organization>janeirodigital</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
