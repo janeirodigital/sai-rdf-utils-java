@@ -13,7 +13,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven-site-plugin.version>3.10.0</maven-site-plugin.version>
-        <maven-release-plugin.version>3.0.0-M5</maven-release-plugin.version>
+        <maven-release-plugin.version>3.0.0</maven-release-plugin.version>
         <maven-project-info-reports-plugin.version>3.1.2</maven-project-info-reports-plugin.version>
         <maven-javadoc.version>3.5.0</maven-javadoc.version>
         <jacoco-maven-plugin.version>0.8.9</jacoco-maven-plugin.version>
