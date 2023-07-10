@@ -22,7 +22,7 @@
         <slf4j.version>2.0.7</slf4j.version>
         <junit.version>5.9.3</junit.version>
         <mockito.version>5.2.0</mockito.version>
-        <jena.version>4.8.0</jena.version>
+        <jena.version>4.9.0</jena.version>
         <collection-utils.version>4.4</collection-utils.version>
         <sonar.organization>janeirodigital</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
